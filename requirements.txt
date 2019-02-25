@@ -1,3 +1,10 @@
 beautifulsoup4
 pandas
 lxml
+pyldavis
+sklearn
+gensim
+Orange
+orange3-text
+numpy
+matplotlib
