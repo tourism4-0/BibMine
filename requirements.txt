@@ -4,7 +4,7 @@ lxml
 pyldavis
 sklearn
 gensim
-Orange
+orange3
 orange3-text
 numpy
 matplotlib
