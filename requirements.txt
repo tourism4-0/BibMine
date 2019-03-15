@@ -8,3 +8,4 @@ orange3
 orange3-text
 numpy
 matplotlib
+dropbox
