@@ -1,6 +1,7 @@
 # BibMine
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ajdapretnar/BibMine/master)
 
-Analysis pipelines for bibliographic analysis.
+Bibliographic analysis pipelines.
 
 ## API Keys
 
