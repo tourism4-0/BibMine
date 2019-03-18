@@ -51,3 +51,5 @@ env.bak/
 venv.bak/
 
 .DS_Store
+
+api_keys.txt
