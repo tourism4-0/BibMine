@@ -52,4 +52,4 @@ venv.bak/
 
 .DS_Store
 
-api_keys.txt
+api_keys.py
