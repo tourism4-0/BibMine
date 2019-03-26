@@ -1,0 +1,2 @@
+curl -O http://mallet.cs.umass.edu/dist/mallet-2.0.8.tar.gz
+tar -xvzf mallet-2.0.8.tar.gz
