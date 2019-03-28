@@ -10,16 +10,6 @@ in [api_keys](api_keys.ipynb) notebook to obtain and register yours API keys.
 Without proper keys, these notebooks will not run.
 
 
-## Data retrieval
+## Analysis
 
-Data can be retrieved with scripts in the _Data retrieval_ folder. You can retrieve full articles from ScienceDirect using the _Elsevier-data-retrieval.ipynb_ script and abstracts from Scopus with the _Scopus-retrieval.ipynb_ script. Scripts are designed so that they save intermediate data to the corresponding folder.
-
-
-## Preprocess data
-
-Run _Preprocessing.ipynb_ to create tokens and explore the data set.
-
-
-## Topic modeling
-
-Run LDA analysis.
+Run main.py to execute all the steps of the analysis.
