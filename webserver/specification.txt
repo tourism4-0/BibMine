@@ -1,0 +1,32 @@
+The web server provides a local cache of bibliographic data.
+
+The server is composed of:
+    - a web API
+    - a background process
+
+The web API provides these endpoints:
+    articles/       GET     READ    get all articles
+    articles/:id/   GET     READ    get a single article
+    articles/       POST    CREATE  add an article
+    articles/:id/   PUT     UPDATE  update an article
+    articles/:id/   DELETE  DELETE  delete an article
+
+    articles_full/       GET     READ    get all articles
+    articles_full/:id/   GET     READ    get a single article
+    articles_full/       POST    CREATE  add an article
+    articles_full/:id/   PUT     UPDATE  update an article
+    articles_full/:id/   DELETE  DELETE  delete an article
+
+    queries/        GET     READ    get all queries
+    queries/:id/    GET     READ    get a single query
+    queries/        POST    CREATE  add a query
+    queries/:id/    PUT     UPDATE  update a query
+    queries/:id/    DELETE  DELETE  delete a query
+
+The `article` includes information on an article (id, title, authors, abstract, journal, doi, ...).
+The `query` includes a query text and the associated article ids.
+
+The background process:
+    - scans the queries table, runs new queries and stores the associated article ids
+    - scans the articles table, retrives and stores new article ids
+
