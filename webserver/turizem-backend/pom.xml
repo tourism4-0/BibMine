@@ -64,6 +64,18 @@
             <groupId>com.kumuluz.ee</groupId>
             <artifactId>kumuluzee-microProfile-2.1</artifactId>
         </dependency>
+
+        <!-- other dependencies -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20180813</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+            <version>2.28</version>
+        </dependency>
     </dependencies>
 
     <build>

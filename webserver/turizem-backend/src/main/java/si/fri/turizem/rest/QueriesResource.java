@@ -1,5 +1,7 @@
 package si.fri.turizem.rest;
 
+import si.fri.turizem.util.ScopusClientUtil;
+
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

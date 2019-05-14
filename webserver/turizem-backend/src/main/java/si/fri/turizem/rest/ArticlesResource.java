@@ -1,22 +1,39 @@
 package si.fri.turizem.rest;
 
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.kumuluz.ee.logs.LogManager;
+import com.kumuluz.ee.logs.Logger;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+
+import com.kumuluz.ee.logs.cdi.Log;
+import com.kumuluz.ee.logs.cdi.LogParams;
+import si.fri.turizem.util.RestUtils;
+import si.fri.turizem.util.ScopusClientUtil;
+
+@Path("articles")
 @RequestScoped
+@Log(LogParams.METRICS)
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-@Path("articles")
-
 public class ArticlesResource {
+    private static final Logger LOG = LogManager.getLogger(ScopusClientUtil.class.getName());
+
+    @Inject
+    private RestUtils restUtils;
 
     @GET
-    public Response getArticles(){
-        //ToDo: get All Articles from DB
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response getArticles(@FormDataParam("query") String query){
+        if(query != null && !query.isEmpty())
+            return restUtils.response(ScopusClientUtil.getArticlesList(query), Response.Status.OK);
+        else
+            throw new RuntimeException("Search query can not be null or empty");
 
-        return null;
     }
 
     @GET
@@ -28,8 +45,8 @@ public class ArticlesResource {
     }
 
     @GET
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @Path("full/{id}")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getFullArticleById(@PathParam("id") Integer articleId){
         //ToDo: get specific article from DB (PDF)
 

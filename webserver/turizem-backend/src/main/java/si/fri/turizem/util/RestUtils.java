@@ -1,9 +1,11 @@
 package si.fri.turizem.util;
 
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.util.Collection;
 
+@RequestScoped
 public class RestUtils {
 
     public Response response(Collection<? extends Object> returnedEntites, Response.Status status) {

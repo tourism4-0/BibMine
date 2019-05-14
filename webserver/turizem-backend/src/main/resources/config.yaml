@@ -1,0 +1,13 @@
+kumuluzee:
+  cors-filter:
+    servlet:
+      allow-origin: "*"
+      supported-methods: "GET,HEAD,POST,PUT,DELETE,OPTIONS"
+      supported-headers: "Authorization,Origin,Accept,Content-Type,Access-Control-Allow-Origin,Access-Control-Request-Headers"
+      exposed-headers: "X-Total-Count"
+      supports-credentials: true
+      max-age: 3600
+  health:
+    checks:
+      disk-space-health-check:
+        threshold: 100000000
