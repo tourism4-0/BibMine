@@ -28,7 +28,7 @@ public class ArticlesResource {
 
     @GET
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response getArticles(@FormDataParam("query") String query){
+    public Response getArticles(@FormDataParam("query") String query) throws NoSuchFieldException {
         if(query != null && !query.isEmpty())
             return restUtils.response(ScopusClientUtil.getArticlesList(query), Response.Status.OK);
         else
