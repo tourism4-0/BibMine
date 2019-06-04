@@ -264,15 +264,30 @@ public class ScopusClientUtil {
             String contentString = getArticleFullText(aid);
 
             if(contentString.isEmpty()){
-                contentString = "{\"ce:sections\":{}}";
+                contentString = "{  \"full-text-retrieval-response\": {\n" +
+                        "    \"originalText\": {\n" +
+                        "      \"xocs:doc\": {\n" +
+                        "        \"xocs:serial-item\": {\n" +
+                        "          \"article\": {\n" +
+                        "            \"body\": {\n" +
+                        "              \"ce:sections\": {\n" +
+                        "                \"ce:section\": [{}]\n" +
+                        "              }\n" +
+                        "            }\n" +
+                        "          }\n" +
+                        "        }\n" +
+                        "      }\n" +
+                        "    }\n" +
+                        "  }\n" +
+                        "}";
             }
 
             try{
                 JSONObject content = new JSONObject(contentString);
+
                 content = content.getJSONObject("full-text-retrieval-response").getJSONObject("originalText").getJSONObject("xocs:doc").getJSONObject("xocs:serial-item").
                         getJSONObject("article").getJSONObject("body").getJSONObject("ce:sections");
-
-                LOG.info("content " + content.toString());
+                
                 xmlJSONObj.append("content", content.getJSONArray("ce:section"));
             }catch(JSONException e) {
                 e.printStackTrace();
