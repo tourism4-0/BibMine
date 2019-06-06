@@ -7,7 +7,6 @@ CREATE SEQUENCE "public".queries_id_seq START WITH 1;
 CREATE TABLE "public".article ( 
 	id                   serial  NOT NULL ,
 	aid                  char(255)   ,
-	query_id             integer   ,
 	json                 bytea   ,
 	xml                  bytea   ,
 	CONSTRAINT pk_articles_id PRIMARY KEY ( id )
@@ -24,6 +23,10 @@ CREATE TABLE "public".article_query (
 	query_id             integer  NOT NULL ,
 	CONSTRAINT primary_keys PRIMARY KEY ( article_id, query_id )
  );
+
+CREATE INDEX "idx_article_query_article_id" ON "public".article_query ( article_id );
+
+CREATE INDEX "idx_article_query_query_id" ON "public".article_query ( query_id );
 
 ALTER TABLE "public".article_query ADD CONSTRAINT fk_article_query_queries FOREIGN KEY ( query_id ) REFERENCES "public".query( id ) ON DELETE CASCADE;
 

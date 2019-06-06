@@ -32943,7 +32943,6 @@ AS $function$xpath_exists$function$
 		<table name="article" >
 			<column name="id" type="serial" length="10" decimal="0" jt="4" mandatory="y" autoincrement="y" />
 			<column name="aid" type="char" length="255" jt="1" />
-			<column name="query_id" type="integer" jt="4" />
 			<column name="json" type="bytea" jt="-2" />
 			<column name="xml" type="bytea" jt="-2" />
 			<index name="pk_articles_id" unique="PRIMARY_KEY" >
@@ -32955,6 +32954,12 @@ AS $function$xpath_exists$function$
 			<column name="query_id" type="integer" jt="4" mandatory="y" />
 			<index name="primary_keys" unique="PRIMARY_KEY" >
 				<column name="article_id" />
+				<column name="query_id" />
+			</index>
+			<index name="idx_article_query_article_id" unique="NORMAL" >
+				<column name="article_id" />
+			</index>
+			<index name="idx_article_query_query_id" unique="NORMAL" >
 				<column name="query_id" />
 			</index>
 			<fk name="fk_article_query_queries" to_schema="public" to_table="query" delete_action="cascade" >

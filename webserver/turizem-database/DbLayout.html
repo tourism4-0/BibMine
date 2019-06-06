@@ -26,7 +26,7 @@
 <a name='Default+Layout'/><h4>Default Layout</h4>
 <a href='https://www.dbschema.com' class='text-secondary small'>&nbsp;&nbsp;&nbsp;by DbSchema</a><br><br><br>
 <div class='svg-container'>
-<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'   width='640' height='334' viewBox='0 0 640 334' >
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'   width='640' height='318' viewBox='0 0 640 318' >
   <script type='text/ecmascript'>
   <![CDATA[
   function hghl(el) { for ( var i in el ){ var elem = document.getElementById(el[i]); if ( elem != null ) elem.setAttribute('class','highlight');  }  }
@@ -219,7 +219,7 @@
 </defs>
 
 <!-- == Desktop == -->
-<rect x='1' y='1' width='638' height='332' rx='8' ry='8' style='fill:url(#layoutBgB); stroke:#777777; stroke-width:0.5;' />
+<rect x='1' y='1' width='638' height='316' rx='8' ry='8' style='fill:url(#layoutBgB); stroke:#777777; stroke-width:0.5;' />
 
 <!-- == Legend == -->
 <g transform='translate(10,10)'>
@@ -239,11 +239,11 @@ article_query ref query ( query_id -&gt; id )</title>
 <text x='377' y='75' transform='rotate(0 377,75)' title='Fk fk_article_query_queries
 article_query ref query ( query_id -&gt; id )' class='relName' style='fill:#748EA7'>query_id</text>
 <!-- == Fk 'article_query_fk_article_query_articles' == -->
-<path id='article_query_fk_article_query_articles'  onmouseover="hghl(['article_query_fk_article_query_articles','public.article_query.article_id','public.article.id'])" onmouseout="uhghl(['article_query_fk_article_query_articles','public.article_query.article_id','public.article.id'])" transform='translate(8,0)' class='scene' d='M 240,64L 144,64' >
+<path id='article_query_fk_article_query_articles'  onmouseover="hghl(['article_query_fk_article_query_articles','public.article_query.article_id','public.article.id'])" onmouseout="uhghl(['article_query_fk_article_query_articles','public.article_query.article_id','public.article.id'])" transform='translate(8,0)' class='scene' d='M 240,64L 112,64' >
 	<title>Fk fk_article_query_articles
 article_query ref article ( article_id -&gt; id )</title>
 </path>
-<path transform='translate(8,0)' marker-start='url(#foot1p)' marker-end='url(#arrow1)'    d='M 240,64L 144,64' ></path>
+<path transform='translate(8,0)' marker-start='url(#foot1p)' marker-end='url(#arrow1)'    d='M 240,64L 112,64' ></path>
 <text x='190' y='59' transform='rotate(0 190,59)' title='Fk fk_article_query_articles
 article_query ref article ( article_id -&gt; id )' class='relName' style='fill:#748EA7'>article_id</text>
 <!-- == Table 'query' == -->
@@ -263,33 +263,31 @@ char(255)</title></a>
 <path d='M 256 84 L 256 64 Q 256 56 264 56 L 360 56 Q 368 56 368 64 L 368 84 L256 84 ' style='fill:url(#tbg_C1D8EE);stroke:1;stroke-opacity:0.1;' />
 <rect class='entity' x='256' y='56' width='112' height='80' rx='8' ry='8' style='fill:none;stroke:#DADDE1'/>
 <a xlink:href='#article_query'><text x='266' y='76'>article_query</text><title>Table public.article_query</title></a>
-  <use id='nn' x='258' y='93' xlink:href='#nn'/><a xlink:href='#article_query.article_id'><use id='pk' x='258' y='92' xlink:href='#pk'/><title>Pk primary_keys ( article_id, query_id ) </title></a>
+  <use id='nn' x='258' y='93' xlink:href='#nn'/><a xlink:href='#article_query.article_id'><use id='pk' x='258' y='92' xlink:href='#pk'/><title>Pk primary_keys ( article_id, query_id ) idx_article_query_article_id ( article_id ) </title></a>
 <a xlink:href='#article_query.article_id'><text id='public.article_query.article_id' x='275' y='103' onmouseover="hghl(['article_query_fk_article_query_articles','public.article.id'])" onmouseout="uhghl(['article_query_fk_article_query_articles','public.article.id'])">article_id</text><title>article_id
 * integer</title></a>
 <a xlink:href='#article_query.article_id'><use id='fk' x='356' y='92' xlink:href='#fk'/><title>References article ( article_id -&gt; id ) </title></a>
-  <use id='nn' x='258' y='109' xlink:href='#nn'/><a xlink:href='#article_query.query_id'><use id='pk' x='258' y='108' xlink:href='#pk'/><title>Pk primary_keys ( article_id, query_id ) </title></a>
+  <use id='nn' x='258' y='109' xlink:href='#nn'/><a xlink:href='#article_query.query_id'><use id='pk' x='258' y='108' xlink:href='#pk'/><title>Pk primary_keys ( article_id, query_id ) idx_article_query_query_id ( query_id ) </title></a>
 <a xlink:href='#article_query.query_id'><text id='public.article_query.query_id' x='275' y='119' onmouseover="hghl(['article_query_fk_article_query_queries','public.query.id'])" onmouseout="uhghl(['article_query_fk_article_query_queries','public.query.id'])">query_id</text><title>query_id
 * integer</title></a>
 <a xlink:href='#article_query.query_id'><use id='fk' x='356' y='108' xlink:href='#fk'/><title>References query ( query_id -&gt; id ) </title></a>
 
 <!-- == Table 'article' == -->
-<rect class='entity' style='stroke:#1E578F' x='48' y='40' width='96' height='128' rx='8' ry='8' style='stroke:none'/>
-<path d='M 48 68 L 48 48 Q 48 40 56 40 L 136 40 Q 144 40 144 48 L 144 68 L48 68 ' style='fill:url(#tbg_C1D8EE);stroke:1;stroke-opacity:0.1;' />
-<rect class='entity' x='48' y='40' width='96' height='128' rx='8' ry='8' style='fill:none;stroke:#DADDE1'/>
-<a xlink:href='#article'><text x='72' y='60'>article</text><title>Table public.article</title></a>
+<rect class='entity' style='stroke:#1E578F' x='48' y='40' width='64' height='112' rx='8' ry='8' style='stroke:none'/>
+<path d='M 48 68 L 48 48 Q 48 40 56 40 L 104 40 Q 112 40 112 48 L 112 68 L48 68 ' style='fill:url(#tbg_C1D8EE);stroke:1;stroke-opacity:0.1;' />
+<rect class='entity' x='48' y='40' width='64' height='112' rx='8' ry='8' style='fill:none;stroke:#DADDE1'/>
+<a xlink:href='#article'><text x='56' y='60'>article</text><title>Table public.article</title></a>
   <use id='nn' x='50' y='77' xlink:href='#nn'/><a xlink:href='#article.id'><use id='pk' x='50' y='76' xlink:href='#pk'/><title>Pk pk_articles_id ( id ) </title></a>
 <a xlink:href='#article.id'><text id='public.article.id' x='67' y='87' onmouseover="hghl(['article_query_fk_article_query_articles','public.article_query.article_id'])" onmouseout="uhghl(['article_query_fk_article_query_articles','public.article_query.article_id'])">id</text><title>id
 * serial</title></a>
-<a xlink:href='#article.id'><use id='ref' x='132' y='76' xlink:href='#ref'/><title>Referred by article_query ( article_id -&gt; id ) </title></a>
+<a xlink:href='#article.id'><use id='ref' x='100' y='76' xlink:href='#ref'/><title>Referred by article_query ( article_id -&gt; id ) </title></a>
   <a xlink:href='#article.aid'><text id='public.article.aid' x='67' y='103'>aid</text><title>aid
 char(255)</title></a>
-<text x='141' y='100' text-anchor='end' class='colType'>c</text>  <a xlink:href='#article.query_id'><text id='public.article.query_id' x='67' y='119'>query_id</text><title>query_id
-integer</title></a>
-<text x='141' y='116' text-anchor='end' class='colType'>#</text>  <a xlink:href='#article.json'><text id='public.article.json' x='67' y='135'>json</text><title>json
+<text x='109' y='100' text-anchor='end' class='colType'>c</text>  <a xlink:href='#article.json'><text id='public.article.json' x='67' y='119'>json</text><title>json
 bytea</title></a>
-<text x='141' y='132' text-anchor='end' class='colType'>~</text>  <a xlink:href='#article.xml'><text id='public.article.xml' x='67' y='151'>xml</text><title>xml
+<text x='109' y='116' text-anchor='end' class='colType'>~</text>  <a xlink:href='#article.xml'><text id='public.article.xml' x='67' y='135'>xml</text><title>xml
 bytea</title></a>
-<text x='141' y='148' text-anchor='end' class='colType'>~</text>
+<text x='109' y='132' text-anchor='end' class='colType'>~</text>
 </g></svg></div>
 
 
