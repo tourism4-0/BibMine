@@ -1,0 +1,1 @@
+This is the backend for project TURIZEM-4.0. It's purpose is to fetch data from the SCOPUS data base and store it in its own data base. 

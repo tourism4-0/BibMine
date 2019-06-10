@@ -9,15 +9,14 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
-import org.json.*;
-import si.fri.turizem.model.Article;
-import si.fri.turizem.model.Query;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.XML;
 
 import javax.ws.rs.InternalServerErrorException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.Map;
 
 public class ScopusClientUtil {
@@ -51,15 +50,16 @@ public class ScopusClientUtil {
      * @return
      * @throws NoSuchFieldException
      */
-    public static List<Object> getArticlesList(String q) throws NoSuchFieldException {
+    public static JSONArray getArticlesList(String q) {
 
         String cursor = "*";
         String queryUrl;
 
         JSONArray articles = new JSONArray();
 
-        while(cursor != null) {
- //       for(int test=0; test<1; test++) {
+ //       while(cursor != null) {
+        for(int test=0; test<1; test++) {
+            int substract = 0;
             queryUrl = scopusURL + "search/scopus?query=" + q + "&apiKey=" + scopusAPIKey + "&cursor=" + cursor + "&count=200";
             LOG.info(queryUrl);
 
@@ -83,7 +83,8 @@ public class ScopusClientUtil {
                         JSONObject jsonObject = new JSONObject(EntityUtils.toString(entity));
                         JSONObject searchResults = jsonObject.getJSONObject("search-results");
 
-                        LOG.info("TOTAL AMOUNT OF RESULTS " + searchResults.getString("opensearch:totalResults"));
+                        int searchTotal = Integer.valueOf(searchResults.getString("opensearch:totalResults"))-substract;
+                        LOG.info("TOTAL AMOUNT OF RESULTS LEFT" + searchTotal);
 
                         if(!searchResults.getJSONObject("cursor").getString("@next").equals(cursor))
                             cursor = searchResults.getJSONObject("cursor").getString("@next").replace("+","%2B").replace("/","%2F");
@@ -112,21 +113,10 @@ public class ScopusClientUtil {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            substract = substract + 200;
         }
 
-        for (int i=0; i < articles.length(); i++){
-            Article article = new Article();
-            Query query = new Query();
-
-            query.setQuery(q);
-
-            String dataXml = getArticle(articles.getJSONObject(i).getString("prism:url"));
-            article.setXml(dataXml.getBytes());
-            article.setJson(convertXmlToJson(dataXml, articles.getJSONObject(i).getString("dc:identifier").substring(10)).getBytes());
-            article.setAid(articles.getJSONObject(i).getString("dc:identifier").substring(10));
-        }
-
-        return articles.toList();
+        return articles;
     }
 
     /**
@@ -160,8 +150,6 @@ public class ScopusClientUtil {
 
                 if(entity != null) {
                     data = EntityUtils.toString(entity);
-                    //ToDo: 1. persist in DB
-
                     return data;
                 }
             }else if(status == 404){
@@ -232,69 +220,5 @@ public class ScopusClientUtil {
             e.printStackTrace();
         }
         return "";
-    }
-
-    /**
-     * Convert article XML data to JSON
-     * Article full text is also added to JSON
-     *
-     * @param xml
-     * @param aid
-     * @return
-     */
-    public static String convertXmlToJson(String xml, String aid){
-        LOG.info("************************************************  convertXmlToJson    ************************************************");
-
-        try {
-            JSONObject xmlJSONObj = XML.toJSONObject(xml);
-
-            // remove unnecessary fields
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").remove("xmlns:ce");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").getJSONObject("item").remove("xmlns:ce");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").getJSONObject("item").remove("ait:process-info");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").getJSONObject("item").getJSONObject("bibrecord").getJSONObject("item-info").remove("ait:process-info");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").remove("xmlns:xocs");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").remove("xmlns:xsi");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").remove("xmlns");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").remove("xmlns:ait");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").remove("xmlns:cto");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").remove("xmlns:prism");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").remove("xmlns:dc");
-
-            String contentString = getArticleFullText(aid);
-
-            if(contentString.isEmpty()){
-                contentString = "{  \"full-text-retrieval-response\": {\n" +
-                        "    \"originalText\": {\n" +
-                        "      \"xocs:doc\": {\n" +
-                        "        \"xocs:serial-item\": {\n" +
-                        "          \"article\": {\n" +
-                        "            \"body\": {\n" +
-                        "              \"ce:sections\": {\n" +
-                        "                \"ce:section\": [{}]\n" +
-                        "              }\n" +
-                        "            }\n" +
-                        "          }\n" +
-                        "        }\n" +
-                        "      }\n" +
-                        "    }\n" +
-                        "  }\n" +
-                        "}";
-            }
-
-            try{
-                JSONObject content = new JSONObject(contentString);
-
-                content = content.getJSONObject("full-text-retrieval-response").getJSONObject("originalText").getJSONObject("xocs:doc").getJSONObject("xocs:serial-item").
-                        getJSONObject("article").getJSONObject("body").getJSONObject("ce:sections");
-                
-                xmlJSONObj.append("content", content.getJSONArray("ce:section"));
-            }catch(JSONException e) {
-                e.printStackTrace();
-            }
-            return xmlJSONObj.toString();
-        }catch(JSONException e) {
-            return e.toString();
-        }
     }
 }

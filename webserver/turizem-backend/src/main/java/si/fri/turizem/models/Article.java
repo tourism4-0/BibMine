@@ -1,4 +1,4 @@
-package si.fri.turizem.model;
+package si.fri.turizem.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -9,10 +9,20 @@ import java.util.Collection;
 import java.util.Objects;
 
 @Entity
+@Table(name = "article")
+@NamedQueries({
+        @NamedQuery(
+                name = "Article.findAllArticles",
+                query = "SELECT a " +
+                        "FROM Article a"
+        ),
+        @NamedQuery(
+                name = "Article.findArticle",
+                query = "SELECT a " +
+                        "FROM Article a WHERE a.aid = :aid"
+        )
+})
 public class Article implements Serializable {
-    private static final long serialVersionUID = 1L;
-
-
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,16 +44,6 @@ public class Article implements Serializable {
     @OneToMany(mappedBy = "article", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @JsonIgnoreProperties("article")
     private Collection<ArticleQuery> articleQueries;
-
-
-
-    public Article(Integer id) {
-        this.id = id;
-    }
-
-    public Article() {
-
-    }
 
     @Override
     public String toString() {

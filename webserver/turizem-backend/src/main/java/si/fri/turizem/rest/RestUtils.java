@@ -1,4 +1,4 @@
-package si.fri.turizem.util;
+package si.fri.turizem.rest;
 
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.core.Response;

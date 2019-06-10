@@ -7,7 +7,10 @@ kumuluzee:
       exposed-headers: "X-Total-Count"
       supports-credentials: true
       max-age: 3600
-  health:
-    checks:
-      disk-space-health-check:
-        threshold: 100000000
+  datasources:
+    - jndi-name: jdbc/turizem
+      connection-url: jdbc:postgresql://localhost:5432/turizem
+      username: postgres
+      password: ---
+      pool:
+        max-size: 20

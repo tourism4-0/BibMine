@@ -1,4 +1,4 @@
-package si.fri.turizem.model;
+package si.fri.turizem.models;
 
 import javax.persistence.Column;
 import javax.persistence.Id;

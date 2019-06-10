@@ -1,4 +1,4 @@
-package si.fri.turizem.model;
+package si.fri.turizem.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -8,6 +8,19 @@ import java.util.Collection;
 import java.util.Objects;
 
 @Entity
+@Table(name = "query")
+@NamedQueries({
+        @NamedQuery(
+                name = "Query.findAllQueries",
+                query = "SELECT q " +
+                        "FROM Query q"
+        ),
+        @NamedQuery(
+                name = "Query.findQuery",
+                query = "SELECT q " +
+                        "FROM Query q WHERE q.query = :query"
+        )
+})
 public class Query implements Serializable {
     private static final long serialVersionUID = 1L;
 

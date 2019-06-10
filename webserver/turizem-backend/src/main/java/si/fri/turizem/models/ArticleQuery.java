@@ -1,12 +1,11 @@
-package si.fri.turizem.model;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+package si.fri.turizem.models;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
+@Table(name = "article_query")
 @IdClass(ArticleQueryPK.class)
 
 public class ArticleQuery implements Serializable {
@@ -21,13 +20,11 @@ public class ArticleQuery implements Serializable {
     private int idQuery;
 
     @ManyToOne()
-    @JoinColumn(name = "article_id", referencedColumnName = "id", nullable = false)
-    @JsonIgnoreProperties("articleQuery")
+    @JoinColumn(name = "article_id", referencedColumnName = "id", nullable = false, insertable = false,updatable = false)
     private Article article;
 
     @ManyToOne()
-    @JoinColumn(name = "patient_id", referencedColumnName = "id", nullable = false)
-    @JsonIgnoreProperties("articleQuery")
+    @JoinColumn(name = "query_id", referencedColumnName = "id", nullable = false, insertable = false,updatable = false)
     private Query query;
 
     @Override
