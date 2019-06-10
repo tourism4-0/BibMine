@@ -78,7 +78,6 @@ public class ArticleEntityBean {
                 articleQuery.setIdArticle(article1.getId());
                 articleQuery.setIdQuery(query1.getId());
 
-                LOG.info("Article Query " + articleQuery);
                 em.persist(articleQuery);
 
             }catch(PersistenceException e){

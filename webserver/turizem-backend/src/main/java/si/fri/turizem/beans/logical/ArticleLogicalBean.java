@@ -35,11 +35,10 @@ public class ArticleLogicalBean {
         JSONArray articles = ScopusClientUtil.getArticlesList(q);
 
         for (int i = 0; i < articles.length(); i++) {
-            LOG.info("LOGICAL BEAN");
             Article article = new Article();
             String dataXml = getArticle(articles.getJSONObject(i).getString("prism:url"));
             article.setXml(dataXml.getBytes(StandardCharsets.UTF_8));
-            article.setJson(convertXmlToJson(dataXml, articles.getJSONObject(i).getString("dc:identifier").substring(10)).getBytes(StandardCharsets.UTF_8));
+            article.setJson(ScopusClientUtil.convertXmlToJson(dataXml, articles.getJSONObject(i).getString("dc:identifier").substring(10)).getBytes(StandardCharsets.UTF_8));
             article.setAid(articles.getJSONObject(i).getString("dc:identifier").substring(10));
 
             Query query = new Query();
@@ -59,69 +58,4 @@ public class ArticleLogicalBean {
         else
             return null;
     }
-
-    /**
-     * Convert article XML data to JSON
-     * Article full text is also added to JSON
-     *
-     * @param xml
-     * @param aid
-     * @return
-     */
-    public String convertXmlToJson(String xml, String aid) {
-        LOG.info("****************************************  convertXmlToJson  ****************************************");
-
-        try {
-            JSONObject xmlJSONObj = XML.toJSONObject(xml);
-
-            // remove unnecessary fields
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").remove("xmlns:ce");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").getJSONObject("item").remove("xmlns:ce");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").getJSONObject("item").remove("ait:process-info");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").getJSONObject("item").getJSONObject("bibrecord").getJSONObject("item-info").remove("ait:process-info");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").remove("xmlns:xocs");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").remove("xmlns:xsi");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").remove("xmlns");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").remove("xmlns:ait");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").remove("xmlns:cto");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").remove("xmlns:prism");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").remove("xmlns:dc");
-
-            String contentString = getArticleFullText(aid);
-
-            if (contentString.isEmpty()) {
-                contentString = "{  \"full-text-retrieval-response\": {\n" +
-                        "    \"originalText\": {\n" +
-                        "      \"xocs:doc\": {\n" +
-                        "        \"xocs:serial-item\": {\n" +
-                        "          \"article\": {\n" +
-                        "            \"body\": {\n" +
-                        "              \"ce:sections\": {\n" +
-                        "                \"ce:section\": [{}]\n" +
-                        "              }\n" +
-                        "            }\n" +
-                        "          }\n" +
-                        "        }\n" +
-                        "      }\n" +
-                        "    }\n" +
-                        "  }\n" +
-                        "}";
-            }
-
-            try {
-                JSONObject content = new JSONObject(contentString);
-
-                content = content.getJSONObject("full-text-retrieval-response").getJSONObject("originalText").getJSONObject("xocs:doc").getJSONObject("xocs:serial-item").
-                        getJSONObject("article").getJSONObject("body").getJSONObject("ce:sections");
-
-                xmlJSONObj.append("content", content.getJSONArray("ce:section"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return xmlJSONObj.toString();
-        } catch (JSONException e) {
-            return e.toString();
-        }
-    }
-
 }

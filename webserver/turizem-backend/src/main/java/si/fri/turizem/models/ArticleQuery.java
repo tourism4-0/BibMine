@@ -6,6 +6,13 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "article_query")
+@NamedQueries({
+        @NamedQuery(
+                name = "ArticleQuery.findArticleQuery",
+                query = "SELECT aq " +
+                        "FROM ArticleQuery aq WHERE aq.query = :query AND aq.article = :article"
+        )
+})
 @IdClass(ArticleQueryPK.class)
 
 public class ArticleQuery implements Serializable {
