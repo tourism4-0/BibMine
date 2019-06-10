@@ -53,3 +53,5 @@ venv.bak/
 .DS_Store
 
 api_keys.py
+
+webserver/turizem-backend/src/main/resources/config\.yaml

@@ -8,9 +8,9 @@ kumuluzee:
       supports-credentials: true
       max-age: 3600
   datasources:
-    - jndi-name: jdbc/turizem
-      connection-url: jdbc:postgresql://localhost:5432/turizem
-      username: postgres
-      password: ---
+    - jndi-name: {{jndi.name}}
+      connection-url: {{db.url}}
+      username: {{db.username}}
+      password: {{db.password}}
       pool:
         max-size: 20

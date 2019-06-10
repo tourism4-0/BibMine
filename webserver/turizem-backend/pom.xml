@@ -108,6 +108,45 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>replacer</artifactId>
+                <version>1.5.3</version>
+                <executions>
+                    <execution>
+                        <id>turizem-configyaml</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                        <configuration>
+                            <ignoreMissingFile>false</ignoreMissingFile>
+                            <file>src/main/resources/config-base.yaml</file>
+                            <outputFile>src/main/resources/config.yaml</outputFile>
+                            <regex>false</regex>
+                            <replacements>
+                                <replacement>
+                                    <token>{{jndi.name}}</token>
+                                    <value>${env.JNDI_NAME}</value>
+                                </replacement>
+                                <replacement>
+                                    <token>{{db.url}}</token>
+                                    <value>${env.DB_URL}</value>
+                                </replacement>
+                                <replacement>
+                                    <token>{{db.username}}</token>
+                                    <value>${env.DB_USERNAME}</value>
+                                </replacement>
+                                <replacement>
+                                    <token>{{db.password}}</token>
+                                    <value>${env.DB_PASSWORD}</value>
+                                </replacement>
+                            </replacements>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
