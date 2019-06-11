@@ -3,6 +3,8 @@ package si.fri.turizem.rest;
 import si.fri.turizem.beans.entity.QueryEntityBean;
 import si.fri.turizem.models.Query;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -23,6 +25,7 @@ public class QueryResource {
     private RestUtils restUtils;
 
     @GET
+    @RolesAllowed("user")
     public Response getQueries() {
         List<Query> queries = queryEntityBean.getAllQueries();
         return restUtils.response(queries, Response.Status.OK);
@@ -30,6 +33,7 @@ public class QueryResource {
 
     @GET
     @Path("{query}")
+    @RolesAllowed("user")
     public Response getArticleById(@QueryParam("query") String q){
         Query query = queryEntityBean.getQuery(q);
         return restUtils.response(query, Response.Status.OK);
@@ -38,6 +42,7 @@ public class QueryResource {
 
     @DELETE
     @Path("{query}")
+    @RolesAllowed("user")
     public Response deleteQuery(@PathParam("query") String query){
         queryEntityBean.deleteQuery(query);
         return restUtils.response(Response.Status.NO_CONTENT);

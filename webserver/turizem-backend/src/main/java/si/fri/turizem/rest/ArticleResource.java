@@ -6,6 +6,8 @@ import si.fri.turizem.beans.entity.ArticleEntityBean;
 import si.fri.turizem.beans.logical.ArticleLogicalBean;
 import si.fri.turizem.models.Article;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -29,6 +31,7 @@ public class ArticleResource {
     private ArticleLogicalBean articleLogicalBean;
 
     @GET
+    @RolesAllowed("user")
     public Response getArticles(@QueryParam("query") String query) {
         if(query != null && !query.isEmpty()){
             articleLogicalBean.persistArticles(query);
@@ -41,6 +44,7 @@ public class ArticleResource {
 
     @GET
     @Path("{id}")
+    @RolesAllowed("user")
     public Response getArticleById(@PathParam("id") String aid){
         Article article = articleEntityBean.getArticle(aid);
         article.setJson(null);
@@ -49,12 +53,14 @@ public class ArticleResource {
 
     @GET
     @Path("full/{aid}")
+    @RolesAllowed("user")
     public Response getFullArticleById(@PathParam("aid") String aid){
         return restUtils.response(articleLogicalBean.getArticleFull(aid), Response.Status.OK);
     }
 
     @DELETE
     @Path("{aid}")
+    @RolesAllowed("user")
     public Response deleteArticle(@PathParam("aid") String aid){
         articleEntityBean.deleteArticle(aid);
         return restUtils.response(Response.Status.NO_CONTENT);
