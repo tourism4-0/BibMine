@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
 import si.fri.turizem.beans.entity.ArticleEntityBean;
+import si.fri.turizem.beans.entity.QueryEntityBean;
 import si.fri.turizem.models.Article;
 import si.fri.turizem.models.Query;
 import si.fri.turizem.util.ScopusClientUtil;
@@ -14,6 +15,7 @@ import si.fri.turizem.util.ScopusClientUtil;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static si.fri.turizem.util.ScopusClientUtil.getArticle;
 import static si.fri.turizem.util.ScopusClientUtil.getArticleFullText;
@@ -25,6 +27,9 @@ public class ArticleLogicalBean {
     @Inject
     private ArticleEntityBean articleEntityBean;
 
+    @Inject
+    private QueryEntityBean queryEntityBean;
+
     /**
      * Prepare entity for persisting in DB
      *
@@ -32,14 +37,20 @@ public class ArticleLogicalBean {
      */
     public void persistArticles(String q) {
 
-        JSONArray articles = ScopusClientUtil.getArticlesList(q);
+        JSONArray scopusArticles = ScopusClientUtil.getArticlesList(q);
+        List<Article> dbArticles = articleEntityBean.getAllArticles();
 
-        for (int i = 0; i < articles.length(); i++) {
+        if(queryEntityBean.getQuery(q) != null)
+            scopusArticles = filterScopusArticles(scopusArticles, dbArticles);
+
+        LOG.info("TOTAL AMOUNT OF NEW ARTICLES ON THIS ITERATION: {}/200", scopusArticles.length());
+
+        for (int i = 0; i < scopusArticles.length(); i++) {
             Article article = new Article();
-            String dataXml = getArticle(articles.getJSONObject(i).getString("prism:url"));
+            String dataXml = getArticle(scopusArticles.getJSONObject(i).getString("prism:url"));
             article.setXml(dataXml.getBytes(StandardCharsets.UTF_8));
-            article.setJson(ScopusClientUtil.convertXmlToJson(dataXml, articles.getJSONObject(i).getString("dc:identifier").substring(10)).getBytes(StandardCharsets.UTF_8));
-            article.setAid(articles.getJSONObject(i).getString("dc:identifier").substring(10));
+            article.setJson(ScopusClientUtil.convertXmlToJson(dataXml, scopusArticles.getJSONObject(i).getString("dc:identifier").substring(10)).getBytes(StandardCharsets.UTF_8));
+            article.setAid(scopusArticles.getJSONObject(i).getString("dc:identifier").substring(10));
 
             Query query = new Query();
             query.setQuery(q);
@@ -48,14 +59,40 @@ public class ArticleLogicalBean {
         }
     }
 
+    /**
+     * Get full text of article
+     *
+     * @param aid
+     * @return
+     */
     public String getArticleFull(String aid) {
         Article article = articleEntityBean.getArticle(aid);
         String dataString = new String(article.getJson(), StandardCharsets.UTF_8);
         JSONObject fullText = new JSONObject(dataString);
 
-        if(fullText.getJSONArray("content").length() != 0)
+        if (fullText.getJSONArray("content").length() != 0)
             return fullText.getJSONArray("content").toString();
         else
             return null;
+    }
+
+    /**
+     * Filter out already persisted articles in local database
+     *
+     * @param scopusArticles
+     * @param dbArticles
+     * @return
+     */
+    public JSONArray filterScopusArticles(JSONArray scopusArticles, List<Article> dbArticles) {
+
+        for (int i = 0; i < scopusArticles.length(); i++) {
+            for (int j = 0; j < dbArticles.size(); j++) {
+                if (scopusArticles.getJSONObject(i).getString("dc:identifier").substring(10).equals(dbArticles.get(j).getAid().trim())) {
+                    scopusArticles.remove(i);
+                    break;
+                }
+            }
+        }
+        return scopusArticles;
     }
 }
