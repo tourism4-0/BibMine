@@ -157,6 +157,10 @@
                                     <token>{{db.password}}</token>
                                     <value>${env.DB_PASSWORD}</value>
                                 </replacement>
+                                <replacement>
+                                    <token>{{keycloak.json}}</token>
+                                    <value>${env.KEYCLOAK_JSON}</value>
+                                </replacement>
                             </replacements>
                         </configuration>
                     </execution>
