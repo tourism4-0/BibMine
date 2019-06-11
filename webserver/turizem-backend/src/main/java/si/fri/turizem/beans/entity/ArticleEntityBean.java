@@ -9,6 +9,7 @@ import si.fri.turizem.models.Query;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
@@ -20,6 +21,9 @@ public class ArticleEntityBean {
 
     @Inject
     private QueryEntityBean queryEntityBean;
+
+    @Inject
+    private ArticleQueryEntityBean articleQueryEntityBean;
 
     @PersistenceContext
     private EntityManager em;
@@ -35,8 +39,8 @@ public class ArticleEntityBean {
             return em.createNamedQuery("Article.findArticle", Article.class)
                     .setParameter("aid", aid)
                     .getSingleResult();
-        } catch (Exception e) {
-            LOG.warn("Article with aid {} not found.", aid);
+        } catch (NoResultException e) {
+            LOG.warn("Article with aid {} not found in Database. It will be now persisted.", aid);
             return null;
         }
     }
@@ -62,25 +66,27 @@ public class ArticleEntityBean {
     @Transactional
     public void persistArticle(Article article, Query query) {
         if (article != null && query != null) {
-            try{
-                if(getArticle(article.getAid()) == null)
+            try {
+                if (getArticle(article.getAid()) == null)
                     em.persist(article);
-                if(queryEntityBean.getQuery(query.getQuery()) == null)
+                if (queryEntityBean.getQuery(query.getQuery()) == null)
                     em.persist(query);
 
                 Article article1 = getArticle(article.getAid());
                 Query query1 = queryEntityBean.getQuery(query.getQuery());
 
                 ArticleQuery articleQuery = new ArticleQuery();
-                articleQuery.setArticle(article1);
-                articleQuery.setQuery(query1);
 
-                articleQuery.setIdArticle(article1.getId());
-                articleQuery.setIdQuery(query1.getId());
+                if(articleQueryEntityBean.getArticleQueries(article1, query1) == null){
+                    articleQuery.setArticle(article1);
+                    articleQuery.setQuery(query1);
 
-                em.persist(articleQuery);
+                    articleQuery.setIdArticle(article1.getId());
+                    articleQuery.setIdQuery(query1.getId());
 
-            }catch(PersistenceException e){
+                    em.persist(articleQuery);
+                }
+            } catch (PersistenceException e) {
                 LOG.warn(e);
                 throw new PersistenceException(e);
             }

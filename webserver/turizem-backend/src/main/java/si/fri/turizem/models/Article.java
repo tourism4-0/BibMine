@@ -1,6 +1,6 @@
 package si.fri.turizem.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -42,7 +42,7 @@ public class Article implements Serializable {
 
 
     @OneToMany(mappedBy = "article", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-    @JsonIgnoreProperties("article")
+    @JsonIgnore
     private Collection<ArticleQuery> articleQueries;
 
     @Override

@@ -10,7 +10,7 @@ import java.util.Objects;
         @NamedQuery(
                 name = "ArticleQuery.findArticleQuery",
                 query = "SELECT aq " +
-                        "FROM ArticleQuery aq WHERE aq.query = :query AND aq.article = :article"
+                        "FROM ArticleQuery aq WHERE aq.query.id = :queryId AND aq.article.id = :articleId"
         )
 })
 @IdClass(ArticleQueryPK.class)

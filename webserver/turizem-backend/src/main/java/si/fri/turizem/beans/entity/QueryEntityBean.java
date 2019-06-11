@@ -6,6 +6,7 @@ import si.fri.turizem.models.Query;
 
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
@@ -28,8 +29,8 @@ public class QueryEntityBean {
             return em.createNamedQuery("Query.findQuery", Query.class)
                     .setParameter("query", query)
                     .getSingleResult();
-        } catch (Exception e) {
-            LOG.warn("Query {} not found.",query);
+        } catch (NoResultException e) {
+            LOG.warn("Query {} not found in Database. It will be now persisted.",query);
             return null;
         }
     }
