@@ -16,4 +16,4 @@ kumuluzee:
         max-size: 20
   security:
     keycloak:
-      json: '{{keycloak.json}}'
+      json: '{"realm":"{{keycloak.realm}}","bearer-only":true,"auth-server-url":"{{keycloak.server}}","ssl-required":"external","resource":"{{keycloak.resource}}"}'

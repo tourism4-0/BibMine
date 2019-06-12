@@ -158,14 +158,39 @@
                                     <value>${env.DB_PASSWORD}</value>
                                 </replacement>
                                 <replacement>
-                                    <token>{{keycloak.json}}</token>
-                                    <value>${env.KEYCLOAK_JSON}</value>
+                                    <token>{{keycloak.realm}}</token>
+                                    <value>${env.KEYCLOAK_REALM}</value>
+                                </replacement>
+                                <replacement>
+                                    <token>{{keycloak.server}}</token>
+                                    <value>${env.KEYCLOAK_SERVER}</value>
+                                </replacement>
+                                <replacement>
+                                    <token>{{keycloak.resource}}</token>
+                                    <value>${env.KEYCLOAK_RESOURCE}</value>
                                 </replacement>
                             </replacements>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+
+                <plugin>
+                    <groupId>com.kumuluz.ee</groupId>
+                    <artifactId>kumuluzee-maven-plugin</artifactId>
+                    <version>${kumuluzee.version}</version>
+                    <executions>
+                        <execution>
+                            <id>package</id>
+                            <goals>
+                                <goal>copy-dependencies</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
         </plugins>
+
+
     </build>
 </project>
