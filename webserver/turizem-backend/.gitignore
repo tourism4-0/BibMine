@@ -1,7 +1,6 @@
 #################
 ## TURIZEM
 #################
-src/main/resources/META-INF/persistence.xml
 src/main/java/si/fri/turizem/Turizem.java
 
 #################
