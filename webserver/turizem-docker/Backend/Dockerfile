@@ -1,36 +1,35 @@
 FROM alpine/git as clone
+WORKDIR /git_repo
+
+ENV GIT_URL=https://{YOUR_TOKEN}:@github.com/ajdapretnar/BibMine.git
+RUN git clone --branch add_webserver $GIT_URL 
+
 WORKDIR /turizem-backend
-ENV BACKEND_GIT_URL=https://XXXXXXXXXXXXXXXXXXXXXXXXXX@github.com/ajdapretnar/BibMine/webserver/turizem-backend.git
-RUN git clone --branch add-webserver $BACKEND_GIT_URL
+RUN cp -r /git_repo/BibMine/webserver/turizem-backend/* /turizem-backend 
+RUN rm -rf /git_repo 
 
 FROM maven:3.5-jdk-8-alpine as build
 WORKDIR /turizem-backend
-COPY --from=clone /turizem-backend/turizem-backend /turizem-backend
+COPY --from=clone /turizem-backend /turizem-backend
 
 ENV KEYCLOAK_REALM=turizem \
-    KEYCLOAK_SERVER=http://localhost:8080/auth \
+    KEYCLOAK_SERVER=http://turizem-keycloak:8080/auth \
     KEYCLOAK_RESOURCE=turizem-api \
     HOST_URL=localhost:3000 \
     PORT=3000 \
-    JNDI_NAME=jdbc/turizem
-    DB_URL=jdbc:postgresql://localhost:5432/turizem
-    DB_USERNAME=postgres
+    JNDI_NAME=jdbc/turizem \
+    DB_URL=jdbc:postgresql://turizem-database:5432/turizem \
+    DB_USERNAME=postgres \
     DB_PASSWORD=postgres
 
 # Run Maven
 RUN mvn prepare-package -DskipTests
 RUN mvn clean package -DskipTests
 
-FROM openjdk:8-jre-alpine
+FROM openjdk:11-jre-slim
 WORKDIR /turizem-backend
 COPY --from=build /turizem-backend/target /turizem-backend
-
-RUN wget https://github.com/jwilder/dockerize/releases/download/v0.6.0/dockerize-alpine-linux-amd64-v0.6.0.tar.gz \
-    && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-v0.6.0.tar.gz \
-    && rm dockerize-alpine-linux-amd64-v0.6.0.tar.gz \
-    && apk update \
-    && apk add openssl      
-
+   
 EXPOSE 3000
 
 ENTRYPOINT ["java"]

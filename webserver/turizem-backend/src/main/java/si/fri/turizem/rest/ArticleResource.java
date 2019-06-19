@@ -6,7 +6,6 @@ import si.fri.turizem.beans.entity.ArticleEntityBean;
 import si.fri.turizem.beans.logical.ArticleLogicalBean;
 import si.fri.turizem.models.Article;
 
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
