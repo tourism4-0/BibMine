@@ -1,7 +1,6 @@
-CREATE SCHEMA "public" IF NOT EXISTS "public";
+CREATE SCHEMA IF NOT EXISTS "public";
 
 CREATE SEQUENCE "public".articles_id_seq START WITH 1;
-
 CREATE SEQUENCE "public".queries_id_seq START WITH 1;
 
 CREATE TABLE "public".article ( 
