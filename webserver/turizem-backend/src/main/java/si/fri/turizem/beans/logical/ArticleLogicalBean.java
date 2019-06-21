@@ -3,9 +3,7 @@ package si.fri.turizem.beans.logical;
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.XML;
 import si.fri.turizem.beans.entity.ArticleEntityBean;
 import si.fri.turizem.beans.entity.QueryEntityBean;
 import si.fri.turizem.models.Article;
@@ -18,7 +16,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static si.fri.turizem.util.ScopusClientUtil.getArticle;
-import static si.fri.turizem.util.ScopusClientUtil.getArticleFullText;
 
 @RequestScoped
 public class ArticleLogicalBean {

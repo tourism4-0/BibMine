@@ -1,7 +1,5 @@
 package si.fri.turizem.rest;
 
-import com.kumuluz.ee.logs.LogManager;
-import com.kumuluz.ee.logs.Logger;
 import si.fri.turizem.beans.entity.ArticleEntityBean;
 import si.fri.turizem.beans.logical.ArticleLogicalBean;
 import si.fri.turizem.models.Article;
@@ -18,7 +16,6 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 @Path("articles")
 public class ArticleResource {
-    private static final Logger LOG = LogManager.getLogger(ArticleResource.class.getName());
 
     @Inject
     private RestUtils restUtils;

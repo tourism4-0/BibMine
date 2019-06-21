@@ -59,8 +59,7 @@ public class ScopusClientUtil {
 
         JSONArray articles = new JSONArray();
 
-        //       while(cursor != null) {
-        for (int test = 0; test < 1; test++) { // Note: For LOOP ONLY FOR DEV. To be removed in final version.
+        while(cursor != null) {
             int subtract = 0;
             queryUrl = scopusURL + "search/scopus?query=" + q + "&apiKey=" + scopusAPIKey + "&cursor=" + cursor + "&count=200";
 

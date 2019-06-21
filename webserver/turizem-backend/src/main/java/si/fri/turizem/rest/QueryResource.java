@@ -3,7 +3,6 @@ package si.fri.turizem.rest;
 import si.fri.turizem.beans.entity.QueryEntityBean;
 import si.fri.turizem.models.Query;
 
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
