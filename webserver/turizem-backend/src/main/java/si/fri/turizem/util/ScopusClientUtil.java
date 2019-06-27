@@ -10,14 +10,22 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import si.fri.turizem.models.parse.Affiliations;
+import si.fri.turizem.models.parse.Article;
+import si.fri.turizem.models.parse.Authors;
 
 import javax.ws.rs.InternalServerErrorException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class ScopusClientUtil {
@@ -225,62 +233,129 @@ public class ScopusClientUtil {
      * @param aid
      * @return
      */
-    public static String convertXmlToJson(String xml, String aid) {
+    public static Article convertXmlToJson(String xml, String aid) {
         LOG.info("*********************************************  convertXmlToJson  *********************************************");
 
-        try {
-            JSONObject xmlJSONObj = XML.toJSONObject(xml);
+        Document doc = Jsoup.parse(xml);
+        Article article = new Article();
 
-            // remove unnecessary fields
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").remove("xmlns:ce");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").getJSONObject("item").remove("xmlns:ce");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").getJSONObject("item").remove("ait:process-info");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").getJSONObject("item").getJSONObject("bibrecord").getJSONObject("item-info").remove("ait:process-info");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").remove("xmlns:xocs");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").remove("xmlns:xsi");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").remove("xmlns");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").remove("xmlns:ait");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").remove("xmlns:cto");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").remove("xmlns:prism");
-            xmlJSONObj.getJSONObject("abstracts-retrieval-response").remove("xmlns:dc");
+        // get article fulltext
+        article.setContent(getArticleFullText(aid));
 
-            String contentString = getArticleFullText(aid);
+        // map relevant fields
+        String publicationTitle = (doc.select("prism|title").isEmpty()) ? "" : doc.select("prism|title").first().text();
+        String publicationAbstract = (doc.select("ce|para").isEmpty()) ? "" : doc.select("ce|para").first().text();
+        String publicationName = (doc.select("prism|publicationname").isEmpty()) ? "" : doc.select("prism|publicationname").first().text();
+        String publicationType = (doc.select("prism|aggregationtype").isEmpty()) ? "" : doc.select("prism|aggregationtype").first().text();
+        String publicationSubType = (doc.select("subtypedescription").isEmpty()) ? "" : doc.select("subtypedescription").first().text();
+        String publicationVolume = (doc.select("prism|volume").isEmpty()) ? "" : doc.select("prism|volume").first().text();
+        String publicationIssue = (doc.select("prism|issueidentifier").isEmpty()) ? "" : doc.select("prism|issueidentifier").first().text();
+        String publicationPageRange = (doc.select("prism|pageRange").isEmpty()) ? "" : doc.select("prism|pageRange").first().text();
+        String publicationDate = (doc.select("prism|coverdate").isEmpty()) ? "" : doc.select("prism|coverdate").first().text();
+        String publicationEid = (doc.select("eid").isEmpty()) ? "" : doc.select("eid").first().text();
+        String publicationDoi = (doc.select("ce|doi").isEmpty()) ? "" : doc.select("ce|doi").first().text();
+        String publicationOpenAccess = (doc.select("openaccess").isEmpty()) ? "" : doc.select("openaccess").first().text();
+        String publicationScopusIdentifier = (doc.select("dc|identifier").isEmpty()) ? "" : doc.select("dc|identifier").first().text();
+        String publicationFundingAcronym = (doc.select("fund-acr").isEmpty()) ? "" : doc.select("fund-acr").first().text();
+        String publicationFundingAgencyID = (doc.select("fund-no").isEmpty()) ? "" : doc.select("fund-no").first().text();
+        String publicationFundingAgency = (doc.select("fund-sponsor").isEmpty()) ? "" : doc.select("fund-sponsor").first().text();
+        String publicationCitedBy = (doc.select("citedby-count").isEmpty()) ? "" : doc.select("citedby-count").first().text();
 
-            if (contentString.isEmpty()) {
-                contentString = "{  \"full-text-retrieval-response\": {\n" +
-                        "    \"originalText\": {\n" +
-                        "      \"xocs:doc\": {\n" +
-                        "        \"xocs:serial-item\": {\n" +
-                        "          \"article\": {\n" +
-                        "            \"body\": {\n" +
-                        "              \"ce:sections\": {\n" +
-                        "                \"ce:section\": [{}]\n" +
-                        "              }\n" +
-                        "            }\n" +
-                        "          }\n" +
-                        "        }\n" +
-                        "      }\n" +
-                        "    }\n" +
-                        "  }\n" +
-                        "}";
-            }
+        article.setTitle(publicationTitle);
+        article.setPublicationAbstact(publicationAbstract);
+        article.setPublicationName(publicationName);
+        article.setType(publicationType);
+        article.setSubtype(publicationSubType);
+        article.setVolume(publicationVolume);
+        article.setIssue(publicationIssue);
+        article.setPageRange(publicationPageRange);
+        article.setDate(publicationDate);
+        article.setEid(publicationEid);
+        article.setDoi(publicationDoi);
+        article.setUrl("https://doi.org/" + article.getDoi());
+        article.setOpenAccess(publicationOpenAccess);
+        article.setScopusIdentifier(publicationScopusIdentifier);
+        article.setFundingAcronym(publicationFundingAcronym);
+        article.setFundingAgencyID(publicationFundingAgencyID);
+        article.setFundingAgency(publicationFundingAgency);
+        article.setCitedBy(publicationCitedBy);
 
-            try {
-                JSONObject content = new JSONObject(contentString);
-
-                content = content.getJSONObject("full-text-retrieval-response").getJSONObject("originalText").getJSONObject("xocs:doc").getJSONObject("xocs:serial-item").
-                        getJSONObject("article").getJSONObject("body").getJSONObject("ce:sections");
-
-                xmlJSONObj.append("content", content.getJSONArray("ce:section"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            LOG.info("XML to JSON conversion status: SUCCESS.");
-            return xmlJSONObj.toString();
-        } catch (JSONException e) {
-            return e.toString();
+        article.setKeywords("");
+        Elements keywords = doc.select("author-keyword");
+        for (Element authkeyword : keywords) {
+            String keyword = authkeyword.text() + ", ";
+            article.setKeywords(article.getKeywords().concat(keyword));
         }
+
+        article.setIndexTerms("");
+        Elements indexes = doc.select("mainterm");
+        for (Element indexTerm : indexes) {
+            String index = indexTerm.text() + ", ";
+            article.setIndexTerms(article.getIndexTerms().concat(index));
+        }
+
+        article.setReferences("");
+        Elements references = doc.select("ref-fulltext");
+        for (Element reference : references) {
+            String ref = reference.text() + "\n ";
+            article.setReferences(article.getReferences().concat(ref));
+        }
+
+        article.setSubjectAreas("");
+        Elements subjectAreas = doc.select("subject-areas");
+        for (Element subjectArea : subjectAreas) {
+            String subject = subjectArea.text() + ", ";
+            article.setSubjectAreas(article.getSubjectAreas().concat(subject));
+        }
+
+        Elements authors = doc.select("authors").first().children();
+        List<Authors> authorsList = new ArrayList<>();
+        for (Element author : authors) {
+            Authors authorParse = new Authors();
+            List<Affiliations> affiliationParses = new ArrayList<>();
+
+            String firstName = (author.select("ce|given-name").isEmpty()) ? "" : author.select("ce|given-name").first().text();
+            String lastName = (author.select("ce|surname").isEmpty()) ? "" : author.select("ce|surname").first().text();
+            String indexedName = (author.select("ce|indexed-name").isEmpty()) ? "" : author.select("ce|indexed-name").first().text();
+            String authorUrl = (author.select("author-url").isEmpty()) ? "" : author.select("author-url").first().text();
+            String auid = (author.select("author").isEmpty()) ? "" : author.select("author").first().attr("auid");
+
+            authorParse.setFirstName(firstName);
+            authorParse.setLastName(lastName);
+            authorParse.setIndexedName(indexedName);
+            authorParse.setAuthorUrl(authorUrl);
+            authorParse.setAuid(auid);
+
+            authorsList.add(authorParse);
+
+            Elements authorAffiliations = author.select("affiliation");
+            for (Element authorAffiliation : authorAffiliations) {
+                Affiliations affiliationParse = new Affiliations();
+
+                String afid = (authorAffiliation.select("affiliation").isEmpty()) ? "" : authorAffiliation.select("affiliation").first().attr("id");
+                String name = "";
+                String city = "";
+                String country = "";
+
+                String cssQuery = "affiliation[id$=" + afid + "]";
+
+                Elements affiliations = doc.select("abstracts-retrieval-response > affiliation").select(cssQuery);
+                for (Element affiliation : affiliations) {
+                    name = (affiliation.select("affilname").isEmpty()) ? "" : affiliation.select("affilname").first().text();
+                    city = (affiliation.select("affiliation-city").isEmpty()) ? "" : affiliation.select("affiliation-city").first().text();
+                    country = (affiliation.select("affiliation-country").isEmpty()) ? "" : affiliation.select("affiliation-country").first().text();
+                }
+
+                affiliationParse.setAfid(afid);
+                affiliationParse.setName(name);
+                affiliationParse.setCity(city);
+                affiliationParse.setCountry(country);
+
+                affiliationParses.add(affiliationParse);
+            }
+            authorParse.setAffiliations(affiliationParses);
+            article.setAuthors(authorsList);
+        }
+        return article;
     }
-
-
 }

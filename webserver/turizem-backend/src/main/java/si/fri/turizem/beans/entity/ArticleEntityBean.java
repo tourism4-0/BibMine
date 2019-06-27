@@ -85,6 +85,7 @@ public class ArticleEntityBean {
                     articleQuery.setIdQuery(query1.getId());
 
                     em.persist(articleQuery);
+                    LOG.info("Database update SUCCESSFULL");
                 }
             } catch (PersistenceException e) {
                 LOG.warn(e);

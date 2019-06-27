@@ -44,10 +44,13 @@ public class ArticleLogicalBean {
 
         for (int i = 0; i < scopusArticles.length(); i++) {
             Article article = new Article();
+
             String dataXml = getArticle(scopusArticles.getJSONObject(i).getString("prism:url"));
             article.setXml(dataXml.getBytes(StandardCharsets.UTF_8));
-            article.setJson(ScopusClientUtil.convertXmlToJson(dataXml, scopusArticles.getJSONObject(i).getString("dc:identifier").substring(10)).getBytes(StandardCharsets.UTF_8));
             article.setAid(scopusArticles.getJSONObject(i).getString("dc:identifier").substring(10));
+
+            JSONObject jsonObject = new JSONObject(ScopusClientUtil.convertXmlToJson(dataXml, scopusArticles.getJSONObject(i).getString("dc:identifier").substring(10)));
+            article.setJson(jsonObject.toString().getBytes(StandardCharsets.UTF_8));
 
             Query query = new Query();
             query.setQuery(q);
@@ -65,12 +68,7 @@ public class ArticleLogicalBean {
     public String getArticleFull(String aid) {
         Article article = articleEntityBean.getArticle(aid);
         String dataString = new String(article.getJson(), StandardCharsets.UTF_8);
-        JSONObject fullText = new JSONObject(dataString);
-
-        if (fullText.getJSONArray("content").length() != 0)
-            return fullText.getJSONArray("content").toString();
-        else
-            return null;
+     return dataString;
     }
 
     /**

@@ -3,6 +3,7 @@ package si.fri.turizem.beans.entity;
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import si.fri.turizem.models.Article;
 import si.fri.turizem.models.ArticleQuery;
 import si.fri.turizem.models.Query;
@@ -45,8 +46,10 @@ public class ArticleTimerEntityBean {
                 } catch (NoResultException e) {
                     String dataXml = getArticle(filteredArticles.getJSONObject(i).getString("prism:url"));
                     article.setXml(dataXml.getBytes(StandardCharsets.UTF_8));
-                    article.setJson(convertXmlToJson(dataXml, filteredArticles.getJSONObject(i).getString("dc:identifier").substring(10)).getBytes(StandardCharsets.UTF_8));
                     article.setAid(filteredArticles.getJSONObject(i).getString("dc:identifier").substring(10));
+
+                    JSONObject jsonObject = new JSONObject(convertXmlToJson(dataXml, filteredArticles.getJSONObject(i).getString("dc:identifier").substring(10)));
+                    article.setJson(jsonObject.toString().getBytes(StandardCharsets.UTF_8));
 
                     em.getTransaction().begin();
                     em.persist(article);
@@ -77,6 +80,7 @@ public class ArticleTimerEntityBean {
                         em.getTransaction().begin();
                         em.persist(articleQuery);
                         em.getTransaction().commit();
+                        LOG.info("Database update SUCCESSFULL");
                     } catch (PersistenceException pe) {
                         LOG.warn(e);
                         throw new PersistenceException(pe);
