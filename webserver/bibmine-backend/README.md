@@ -1,0 +1,1 @@
+This is BibMine backend. It's purpose is to fetch data from the SCOPUS database and store it in its own database. 

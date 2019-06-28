@@ -1,0 +1,56 @@
+version: '3.2'
+services:
+  bibmine-database:
+    image: bibmine-database
+    build: ./Database
+    container_name: bibmine-database
+    restart: unless-stopped
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+    env_file:
+      - ./bibmine.env
+    ports:
+      - "5432:5432"
+    networks:
+      - bibmine
+      
+  bibmine-keycloak:
+    image: bibmine-keycloak
+    build: ./Keycloak
+    container_name: bibmine-keycloak
+    restart: unless-stopped
+    volumes:
+      - keycloak_db:/bibmine-keycloak/keycloak-5.0.0/standalone/data
+    env_file:
+      - ./bibmine.env
+    ports:
+      - "8080:8080"
+    networks:
+      - bibmine   
+
+  bibmine-backend:
+    image: bibmine-backend
+    depends_on:
+      - bibmine-database
+      - bibmine-keycloak
+    build:
+      context: ./Backend
+    container_name: bibmine-backend
+    restart: unless-stopped
+    env_file:
+      - ./bibmine.env
+    ports:
+      - "3000:3000"
+    networks:
+      - bibmine
+
+networks:
+  bibmine:
+    driver: bridge
+
+volumes:
+  keycloak_db: 
+  postgresql_data:     
+  
+  
+
