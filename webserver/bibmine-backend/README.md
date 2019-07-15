@@ -9,7 +9,9 @@ Requirements to run the backend:
   - Keycloak 5.0
   - PostgreSQL
   
-If you would like to run the BibMine service and interact with it externally, it is necessary for you to register a domain to your IP and setup letsencrypt service. Otherwise, if you run and interact with BibMine locally or security is not your priority you can turn off the ssl property in Keycloak.  
+If you would like to run the BibMine service and interact with it externally, it is necessary for you to register a domain to your IP and setup letsencrypt service. Otherwise, if you run and interact with BibMine locally or security is not your priority you can turn off the ssl property in Keycloak.
+
+The BibMine backend components can run on the host as separate services or as Docker containers. 
   
 ## Keycloak setup
 Setup
