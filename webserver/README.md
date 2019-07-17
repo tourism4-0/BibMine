@@ -21,6 +21,10 @@ wget https://downloads.jboss.org/keycloak/5.0.0/keycloak-5.0.0.tar.gz
 tar -xvzf keycloak-5.0.0.tar.gz
 sudo rm keycloak-5.0.0.tar.gz
 ```
+Copy standalone.xml configuration to proper location.
+```
+cp <BibMine webserver location>/Keycloak/standalone.xml ~/keycloak-5.0.0/standalone/configuration/
+```
 Import the preset configuration when running Keycloak for the first time.
 
 *NOTE: Make sure to choose the correct location of the keycloak-configuration.json when running the command bellow.*
@@ -32,7 +36,7 @@ After the first start, in the future Keycloak can be started by simply running:
 ```
 ./keycloak-5.0.0/bin/standalone.sh
 ```
-Now the Keycloak server can be accessed through http://localhost:800/auth/
+Now the Keycloak server can be accessed through http://localhost:8080/auth/
 
 Create users and assign roles. By default there is one user created for testing purposes.
 
