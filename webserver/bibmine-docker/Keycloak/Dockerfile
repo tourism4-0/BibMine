@@ -14,6 +14,7 @@ RUN wget $KEYCLOAK_URL \
 FROM openjdk:8-jre-alpine as build
 WORKDIR /bibmine-keycloak
 COPY --from=clone /bibmine-keycloak/keycloak-5.0.0 /bibmine-keycloak/keycloak-5.0.0
+COPY --from=clone /bibmine-keycloak/standalone.xml /bibmine-keycloak/keycloak-5.0.0/standalone/configuration/
 COPY --from=clone /bibmine-keycloak/keycloak-configuration.json /bibmine-keycloak/keycloak-5.0.0/
 
 EXPOSE 8080
