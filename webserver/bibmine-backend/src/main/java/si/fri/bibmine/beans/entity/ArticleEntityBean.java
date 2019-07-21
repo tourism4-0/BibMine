@@ -40,7 +40,7 @@ public class ArticleEntityBean {
                     .setParameter("aid", aid)
                     .getSingleResult();
         } catch (NoResultException e) {
-            LOG.warn("Article with aid {} not found in Database. It will be now persisted.", aid);
+            LOG.warn("Article with aid {} not found in Database.", aid);
             return null;
         }
     }
@@ -67,11 +67,14 @@ public class ArticleEntityBean {
     public void persistArticle(Article article, Query query) {
         if (article != null && query != null) {
             try {
-                if (getArticle(article.getAid()) == null)
+                if (getArticle(article.getAid()) == null){
+                    LOG.info("Article with aid {} will be now persisted in Database.", article.getAid());
                     em.persist(article);
-                if (queryEntityBean.getQuery(query.getQuery()) == null)
+                }
+                if (queryEntityBean.getQuery(query.getQuery()) == null){
+                    LOG.info("Query {} will be now persisted in Database.", query.getQuery());
                     em.persist(query);
-
+                }
                 Article article1 = getArticle(article.getAid());
                 Query query1 = queryEntityBean.getQuery(query.getQuery());
 

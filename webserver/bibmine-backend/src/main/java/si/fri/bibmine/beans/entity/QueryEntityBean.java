@@ -30,7 +30,7 @@ public class QueryEntityBean {
                     .setParameter("query", query)
                     .getSingleResult();
         } catch (NoResultException e) {
-            LOG.warn("Query {} not found in Database. It will be now persisted.",query);
+            LOG.warn("Query {} not found in Database.",query);
             return null;
         }
     }

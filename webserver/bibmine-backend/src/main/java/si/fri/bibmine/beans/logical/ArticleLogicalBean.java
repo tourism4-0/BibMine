@@ -77,7 +77,13 @@ public class ArticleLogicalBean {
      */
     public String getArticleFull(String aid) {
         Article article = articleEntityBean.getArticle(aid);
-        String dataString = new String(article.getJson(), StandardCharsets.UTF_8);
+        String dataString = "";
+        if(article != null){
+            dataString = new String(article.getJson(), StandardCharsets.UTF_8);
+        }
+        else {
+            dataString = "Article " + aid + " not found.";
+        }
     return dataString;
     }
 
@@ -89,7 +95,13 @@ public class ArticleLogicalBean {
      */
     public String getArticleXML(String aid) {
         Article article = articleEntityBean.getArticle(aid);
-        String dataString = new String(article.getXml(), StandardCharsets.UTF_8);
+        String dataString = "";
+        if(article != null){
+            dataString = new String(article.getXml(), StandardCharsets.UTF_8);
+        }
+        else {
+            dataString = "Article " + aid + " not found.";
+        }
         return dataString;
     }
 
