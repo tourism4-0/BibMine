@@ -1,9 +1,4 @@
 #################
-## BIBMINE
-#################
-src/main/java/si/fri/bibmine/Bibmine.java
-
-#################
 ## Eclipse
 #################
 *.pydevproject
