@@ -32,7 +32,7 @@ public class ScopusClientUtil {
     private static final Logger LOG = LogManager.getLogger(ScopusClientUtil.class.getName());
 
     /*Scopus environment variables*/
-    private static final String SCOPUS_KEY = "";
+    private static final String SCOPUS_KEY_NAME = "SCOPUS_KEY";
 
     /*Scopus settings*/
     private static String scopusAPIKey = "";
@@ -47,9 +47,11 @@ public class ScopusClientUtil {
 
         Map<String, String> env = System.getenv();
 
-        if (env.containsKey(SCOPUS_KEY)) {
-            scopusAPIKey = env.get(SCOPUS_KEY);
+        if (env.containsKey(SCOPUS_KEY_NAME)) {
+            scopusAPIKey = env.get(SCOPUS_KEY_NAME);
         }
+
+        LOG.trace("Variables initialized: " + "scopusAPIKey=" + scopusAPIKey + ".");
     }
 
     /**
